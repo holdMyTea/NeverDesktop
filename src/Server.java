@@ -7,11 +7,14 @@ import java.io.DataOutputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import com.mysql.jdbc.Driver;
+
+//^^^u no
 
 public class Server {
-    public static void main(String args[]) {
+    /*public static void main(String args[]) {
         Serving servr = new Serving();
-    }
+    }*/
 }
 
 class Serving {
