@@ -4,7 +4,7 @@ public class Server {
 
 
     JLabel answear;
-
+    SQLonnector sqLonnector;
     CustomConnection[] connections;
 
     public static void main(String args[]) {
@@ -12,14 +12,14 @@ public class Server {
     }
 
     Server() {
+        sqLonnector = new SQLonnector();
         connections = new CustomConnection[]{new CustomConnection(this, 1488, 0)};
     }
 
 
     public boolean logger(String login, String pass) {
-        //TODO: db login/pass cheq
         System.out.println("Logger logs: "+login+" and "+pass);
-        return true;
+        return sqLonnector.cheqUser(login, pass)!=0;
     }
 
 

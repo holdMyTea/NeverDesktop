@@ -1,10 +1,11 @@
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class CustomConnection implements Runnable{
+public class CustomConnection implements Runnable {
 
     Server server;
 
@@ -33,9 +34,19 @@ public class CustomConnection implements Runnable{
     public void run() {
         if (connect()) {
             System.out.println("Connection #" + number + " on port " + port + " connected");
-            if (loggingIn()) {
-                System.out.println("Connection #" + number + " on port " + port + " logged in");
-                messageRecieving();
+            try {
+                while (socket.isConnected()) {
+                    System.out.println("Waiting for login");
+                    if (loggingIn()) {
+                        out.writeBoolean(true);
+                        System.out.println("Connection #" + number + " on port " + port + " logged in");
+                        messageRecieving();
+                    } else {
+                        out.writeBoolean(false);
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }
@@ -71,17 +82,20 @@ public class CustomConnection implements Runnable{
         try {
             String log, pass;
             log = in.readUTF();
-            System.out.println("Login recieved: "+log);;
+            System.out.println("Login recieved: " + log);
+            ;
             if (log.contains("_login_")) {
+                log = log.substring(7);
                 pass = in.readUTF();
-                System.out.println("Password recieved: "+pass);
+                System.out.println("Password recieved: " + pass);
                 if (pass.contains("_pass_")) {
+                    pass = pass.substring(6);
                     if (server.logger(log, pass)) {
                         return true;
                     }
                 }
             }
-            System.out.println("No fcuking log/pass coincedsdasdasdafrgfuergijnce");
+            System.out.println("No log/pass coincidence");
             return false;
         } catch (Exception e) {
             e.printStackTrace();
@@ -92,7 +106,6 @@ public class CustomConnection implements Runnable{
 
     private void messageRecieving() {
         try {
-            out.writeBoolean(true);
             System.out.println("Connection #" + number + " on port " + port + " began reciving messages");
             String line;
             System.out.println(Integer.toString(in.available()));
