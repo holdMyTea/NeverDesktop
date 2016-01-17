@@ -1,89 +1,46 @@
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.net.InetAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
-import com.mysql.jdbc.Driver;
-
-//^^^u no
 
 public class Server {
-    /*public static void main(String args[]) {
-        Serving servr = new Serving();
-    }*/
-}
 
-class Serving {
-    ServerSocket s;
-    Socket sock;
-    DataInputStream in;
-    DataOutputStream out;
 
     JLabel answear;
 
-    int port = 1488;
+    CustomConnection[] connections;
 
-    Serving() {
-        answear = new JLabel();
-        if (connect()) {
-            System.out.println("Framing");
-            FrameView frame = new FrameView();
-            doTheStuff();
-        }
+    public static void main(String args[]) {
+        Server servr = new Server();
     }
 
-    private boolean connect() {
-        try {
-            System.out.println(InetAddress.getLocalHost().toString());
-            s = new ServerSocket(port);
-            System.out.println("Waiting for client...");
-            sock = s.accept();
-            System.out.println("Got a client");
-            System.out.println();
-
-            in = new DataInputStream(sock.getInputStream());
-            out = new DataOutputStream(sock.getOutputStream());
-
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-
+    Server() {
+        connections = new CustomConnection[]{new CustomConnection(this, 1488, 0)};
     }
 
-    private void doTheStuff() {
+
+    public boolean logger(String login, String pass) {
+        //TODO: db login/pass cheq
+        System.out.println("Logger logs: "+login+" and "+pass);
+        return true;
+    }
+
+
+    public void messageRecieved(String message, int numOfConnectionRecieved) {
         try {
-            String line;
-            while (true) {
-                line = in.readUTF();
-                answear.setText(line);
-                System.out.println("Waiting for following");
-                System.out.println();
+            for (int i = 0; i < connections.length; i++) {
+                if (i == numOfConnectionRecieved) {
+                    connections[i].prooveRecieving(message);
+                } else {
+                    connections[i].sendMessage(message,numOfConnectionRecieved);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    boolean send(String message) {
-        try {
-            System.out.println("Sending: " + message);
-            out.writeUTF(message);
-            out.flush();
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
 
-    }
 
-    private class FrameView extends JFrame {
+
+    /*private class FrameView extends JFrame {
         FrameView() {
             try{
                 this.setSize(200, 300);
@@ -115,5 +72,14 @@ class Serving {
                 e.printStackTrace();
             }
         }
-    }
+    }*/
+
+    /*private class TableMaker{
+        TableMaker(int rows){
+            String[] rowTitles = {"number","port","state"};
+            String[] colTitles = {"1","2","3"};
+
+            JTable table = new JTable(rowTitles,colTitles);
+        }
+    }*/
 }
