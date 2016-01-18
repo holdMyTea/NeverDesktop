@@ -32,26 +32,26 @@ public class CustomConnection implements Runnable {
 
     @Override
     public void run() {
-        if (connect()) {
-            System.out.println("Connection #" + number + " on port " + port + " connected");
+        while (true) {
             try {
-                while (socket.isConnected()) {
-                    System.out.println("Waiting for login");
-                    if (loggingIn()) {
-                        out.writeBoolean(true);
-                        System.out.println("Connection #" + number + " on port " + port + " logged in");
-                        messageRecieving();
-                    } else {
-                        out.writeBoolean(false);
-                    }
+                System.out.println("Waiting for login");
+                if (loggingIn()) {
+                    out.writeBoolean(true);
+                    System.out.println("Connection #" + number + " on port " + port + " logged in");
+                    messageRecieving();
+                } else {
+                    out.writeBoolean(false);
+                    closeAll();
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+
     }
 
-    private boolean connect() {
+
+    public boolean loggingIn() {
         try {
             System.out.println(InetAddress.getLocalHost().toString());
             serverSocket = new ServerSocket(port);
@@ -63,24 +63,10 @@ public class CustomConnection implements Runnable {
             in = new DataInputStream(socket.getInputStream());
             out = new DataOutputStream(socket.getOutputStream());
 
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            try {
-                socket.close();
-                serverSocket.close();
-                in.close();
-                out.close();
-            } catch (Exception innerEx) {
-                e.printStackTrace();
-            }
-            return false;
-        }
-    }
+            System.out.println("Connection #" + number + " on port " + port + " connected");
 
-    public boolean loggingIn() {
-        try {
             String log, pass;
+
             log = in.readUTF();
             System.out.println("Login recieved: " + log);
             ;
@@ -98,7 +84,9 @@ public class CustomConnection implements Runnable {
             System.out.println("No log/pass coincidence");
             return false;
         } catch (Exception e) {
+            System.out.println("Connection/logging failed");
             e.printStackTrace();
+            closeAll();
             return false;
         }
 
@@ -128,13 +116,18 @@ public class CustomConnection implements Runnable {
         }
     }
 
-    public void prooveRecieving(String message) {
+    private void closeAll(){
         try {
-            out.writeUTF(":" + message);
-        } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("Closing all");
+            in.close();
+            out.close();
+            socket.close();
+            serverSocket.close();
+        }catch(IOException e){
+            System.out.println("Exception while closing, FailFish!");
         }
     }
+
 
     public int getNumber() {
         return number;

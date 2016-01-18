@@ -13,7 +13,7 @@ public class Server {
 
     Server() {
         sqLonnector = new SQLonnector();
-        connections = new CustomConnection[]{new CustomConnection(this, 1488, 0)};
+        connections = new CustomConnection[]{new CustomConnection(this, 1488, 0)/*,new CustomConnection(this, 1489, 1)*/};
     }
 
 
@@ -26,11 +26,7 @@ public class Server {
     public void messageRecieved(String message, int numOfConnectionRecieved) {
         try {
             for (int i = 0; i < connections.length; i++) {
-                if (i == numOfConnectionRecieved) {
-                    connections[i].prooveRecieving(message);
-                } else {
-                    connections[i].sendMessage(message,numOfConnectionRecieved);
-                }
+                connections[i].sendMessage(message,numOfConnectionRecieved);
             }
         } catch (Exception e) {
             e.printStackTrace();
