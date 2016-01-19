@@ -23,10 +23,10 @@ public class Server {
     }
 
 
-    public void messageRecieved(String message, int numOfConnectionRecieved) {
+    public void messageRecieved(String message) {
         try {
             for (int i = 0; i < connections.length; i++) {
-                connections[i].sendMessage(message,numOfConnectionRecieved);
+                connections[i].sendMessage(message);
             }
         } catch (Exception e) {
             e.printStackTrace();

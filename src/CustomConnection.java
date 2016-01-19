@@ -101,16 +101,16 @@ public class CustomConnection implements Runnable {
                 //line = Integer.toString(in.read());
                 line = in.readUTF();
                 System.out.println("Connection #" + number + " on port " + port + " recived: " + line);
-                server.messageRecieved(line, number);
+                server.messageRecieved(line);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void sendMessage(String message, int num) {
+    public void sendMessage(String message) {
         try {
-            out.writeUTF("_" + num + "_" + message);
+            out.writeUTF(message);
         } catch (Exception e) {
             e.printStackTrace();
         }
