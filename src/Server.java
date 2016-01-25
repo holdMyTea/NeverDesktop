@@ -1,9 +1,10 @@
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class Server {
 
-
-    JLabel answear;
     SQLonnector sqLonnector;
     CustomConnection[] connections;
 
@@ -13,7 +14,8 @@ public class Server {
 
     Server() {
         sqLonnector = new SQLonnector();
-        connections = new CustomConnection[]{new CustomConnection(this, 1488, 0)/*,new CustomConnection(this, 1489, 1)*/};
+        connections = new CustomConnection[]{new CustomConnection(this, 1488, 0),new CustomConnection(this, 1489, 1)};
+        FrameView frameView = new FrameView();
     }
 
 
@@ -36,16 +38,13 @@ public class Server {
 
 
 
-    /*private class FrameView extends JFrame {
+    private class FrameView extends JFrame {
         FrameView() {
             try{
                 this.setSize(200, 300);
                 this.setVisible(true);
                 this.setLayout(new BorderLayout());
                 this.setResizable(false);
-
-                answear.setSize(200, 100);
-                this.add(answear, BorderLayout.PAGE_START);
 
                 JTextField textField = new JTextField();
                 this.add(textField, BorderLayout.CENTER);
@@ -56,7 +55,8 @@ public class Server {
                     public void actionPerformed(ActionEvent arg0) {
                         String message = textField.getText();
                         if (!message.isEmpty()) {
-                            send(message);
+                            message = "_server_"+message;
+                            messageRecieved(message);
                         }
                     }
                 });
@@ -68,14 +68,5 @@ public class Server {
                 e.printStackTrace();
             }
         }
-    }*/
-
-    /*private class TableMaker{
-        TableMaker(int rows){
-            String[] rowTitles = {"number","port","state"};
-            String[] colTitles = {"1","2","3"};
-
-            JTable table = new JTable(rowTitles,colTitles);
-        }
-    }*/
+    }
 }

@@ -1,7 +1,7 @@
-import com.sun.org.apache.xpath.internal.SourceTree;
-
-import java.sql.*;
-import java.util.Scanner;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 
 public class SQLonnector {
@@ -68,7 +68,6 @@ public class SQLonnector {
                 if((login.equals(dbLog) || login.equals(dbEmail))&&(pass.equals(dbPass))){
                     return dbID;
                 }
-                return 0;
             }
         } catch (Exception e) {
             e.printStackTrace();
